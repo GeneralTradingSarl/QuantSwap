@@ -144,13 +144,18 @@ Point it at a real deployment by setting `NEXT_PUBLIC_INDEXER_URL` to a hosted i
 
 ## Deploying to a test network
 
+Either run the **Deploy to a test network** workflow from the Actions tab, which needs
+nothing installed and commits the deployment record back to the repository, or do it locally:
+
 ```bash
 cp .env.example .env      # fill in PRIVATE_KEY and an RPC URL
 npx hardhat run scripts/deploy.js --network sepolia
+npx hardhat run scripts/verify.js --network sepolia
 NETWORK=sepolia RPC_URL=$SEPOLIA_RPC_URL npm run indexer
 ```
 
 Use a throwaway key. The deploy script seeds mock tokens and liquidity on test networks only.
+Faucets, secrets and the indexer configuration are in [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Status and limitations
 

@@ -46,6 +46,12 @@ module.exports = {
     ...testnet("baseSepolia", process.env.BASE_SEPOLIA_RPC_URL, 84532),
     ...testnet("arbitrumSepolia", process.env.ARBITRUM_SEPOLIA_RPC_URL, 421614),
   },
+  etherscan: {
+    // One key covers every explorer on the Etherscan v2 API. A missing key is not an error
+    // until `verify` is actually run, so a fresh clone can still compile and test.
+    apiKey: process.env.ETHERSCAN_API_KEY ?? "",
+  },
+  sourcify: { enabled: false },
   gasReporter: { enabled: process.env.REPORT_GAS === "true" },
   mocha: { timeout: 120000 },
 };

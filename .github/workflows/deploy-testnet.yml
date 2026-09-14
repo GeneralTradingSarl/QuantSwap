@@ -1,0 +1,77 @@
+name: Deploy to a test network
+
+# Deployment is manual on purpose. A push that silently redeploys contracts is a push that
+# can strand liquidity at an address nobody is pointing at any more.
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: Target network
+        required: true
+        default: sepolia
+        type: choice
+        options: [sepolia, baseSepolia, arbitrumSepolia]
+      verify:
+        description: Verify on the block explorer after deploying
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+        # Contracts are never deployed from a red test suite.
+
+      - name: Deploy
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          ARBITRUM_SEPOLIA_RPC_URL: ${{ secrets.ARBITRUM_SEPOLIA_RPC_URL }}
+        run: npx hardhat run scripts/deploy.js --network ${{ inputs.network }}
+
+      - name: Verify on the explorer
+        if: ${{ inputs.verify }}
+        continue-on-error: true
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          ARBITRUM_SEPOLIA_RPC_URL: ${{ secrets.ARBITRUM_SEPOLIA_RPC_URL }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/verify.js --network ${{ inputs.network }}
+
+      - name: Export the addresses and ABIs to the interface
+        run: node scripts/export-frontend.js
+
+      - name: Commit the deployment record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add deployments/${{ inputs.network }}.json web/generated
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "Record the ${{ inputs.network }} deployment"
+            git push
+          fi
+
+      - name: Summarise
+        run: |
+          {
+            echo "## Deployed to ${{ inputs.network }}"
+            echo '```json'
+            cat deployments/${{ inputs.network }}.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
