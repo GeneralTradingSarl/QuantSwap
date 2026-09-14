@@ -3,6 +3,7 @@
 import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { indexerApi } from "@/lib/api";
+import { usePool } from "@/lib/usePools";
 import { PriceChart } from "@/components/PriceChart";
 import { TradeFeed } from "@/components/TradeFeed";
 import { formatNumber, formatPercent } from "@/lib/format";
@@ -17,24 +18,27 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
   const { address } = use(params);
   const interval = INTERVALS[1]!.seconds;
 
-  const pool = useQuery({
-    queryKey: ["pool", address],
-    queryFn: () => indexerApi.pool(address),
-    refetchInterval: 10_000,
-  });
+  const poolQuery = usePool(address);
+  const pool = { data: poolQuery.data?.pool, isError: poolQuery.isError };
+  const liveOnly = poolQuery.data?.source === "chain";
+
   const candles = useQuery({
     queryKey: ["candles", address, interval],
     queryFn: () => indexerApi.candles(address, interval, 120),
     refetchInterval: 15_000,
+    retry: false,
+    enabled: !liveOnly,
   });
   const swaps = useQuery({
     queryKey: ["swaps", address],
     queryFn: () => indexerApi.swaps(address, 25),
     refetchInterval: 10_000,
+    retry: false,
+    enabled: !liveOnly,
   });
 
-  if (pool.isError) {
-    return <p className="muted">Pool not found, or the indexer is not reachable.</p>;
+  if (poolQuery.isError || (poolQuery.isSuccess && !poolQuery.data.pool)) {
+    return <p className="muted">No pool at this address on the current network.</p>;
   }
 
   return (
@@ -68,11 +72,15 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
           />
           <Stat
             label="24h volume"
-            value={`${formatNumber(pool.data.volume24h.token0, 2)} ${pool.data.token0.symbol}`}
+            value={
+              liveOnly ? "-" : `${formatNumber(pool.data.volume24h.token0, 2)} ${pool.data.token0.symbol}`
+            }
           />
           <Stat
             label="24h fees to LPs"
-            value={`${formatNumber(pool.data.fees24h.token0, 4)} ${pool.data.token0.symbol}`}
+            value={
+              liveOnly ? "-" : `${formatNumber(pool.data.fees24h.token0, 4)} ${pool.data.token0.symbol}`
+            }
           />
         </div>
       ) : null}
@@ -84,7 +92,12 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
             {pool.data ? `${pool.data.token1.symbol} per ${pool.data.token0.symbol}` : ""}, 15 minute
             candles from executed swaps.
           </p>
-          {candles.isLoading ? (
+          {liveOnly ? (
+            <p className="notice" style={{ marginTop: 0 }}>
+              Price history comes from the indexer, which is not reachable. Reserves above are
+              read live from the chain.
+            </p>
+          ) : candles.isLoading ? (
             <div className="skeleton" style={{ height: 260 }} />
           ) : (
             <PriceChart candles={candles.data ?? []} quoteSymbol={pool.data?.token1.symbol ?? ""} />
@@ -94,7 +107,11 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
         <section className="card">
           <h2 className="card-title">Recent trades</h2>
           <p className="card-subtitle">Directly from indexed Swap events.</p>
-          <TradeFeed swaps={swaps.data ?? []} />
+          {liveOnly ? (
+            <p className="muted small">Unavailable without the indexer.</p>
+          ) : (
+            <TradeFeed swaps={swaps.data ?? []} />
+          )}
         </section>
       </div>
     </>

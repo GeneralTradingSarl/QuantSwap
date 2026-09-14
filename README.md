@@ -1,4 +1,6 @@
-# QuantSwap
+# QuantSwap — a constant product decentralised exchange
+
+**Built by [Ismaël LADJOHOUNLOU](https://ismael-portfolio-liard.vercel.app/en)** · Solidity · Hardhat · viem · Next.js · wagmi
 
 A constant product decentralised exchange, built end to end: Solidity contracts, an event
 indexer with reorg handling, and a Next.js interface that talks to both.
@@ -134,7 +136,23 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow and
 [docs/SECURITY.md](docs/SECURITY.md) for the threat model and the mitigations that are and
 are not in place.
 
+## Author
+
+**Ismaël LADJOHOUNLOU** — data engineer, algorithmic trading and automation developer.
+Execution systems for real money: failed fills, stale prices, idempotent retries, state that
+survives a crash.
+
+- Portfolio: <https://ismael-portfolio-liard.vercel.app/en>
+- GitHub: <https://github.com/GeneralTradingSarl>
+- Upwork: <https://www.upwork.com/freelancers/~01498331f7c7800fc0>
+- Other work: [Cascade](https://github.com/GeneralTradingSarl/Cascade) (Instagram to WhatsApp
+  automation pipeline) and
+  [QuantSphere Terminal](https://github.com/GeneralTradingSarl/quantsphere-terminal)
+  (C++20 quantitative finance engine)
+
+Available for smart contract, indexing and web3 front-end work.
+
 ## Licence
 
-GPL-3.0-or-later. The core AMM design follows Uniswap V2, which is the reference
+GPL-3.0-or-later © 2026 Ismaël LADJOHOUNLOU. See [LICENSE](LICENSE). The core AMM design follows Uniswap V2, which is the reference
 implementation of the constant product model and is itself GPL-3.0.

@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { indexerApi } from "@/lib/api";
+import { usePools } from "@/lib/usePools";
 import { formatAddress, formatNumber, formatPercent } from "@/lib/format";
 
 export default function PoolsPage() {
-  const pools = useQuery({ queryKey: ["pools"], queryFn: indexerApi.pools, refetchInterval: 10_000 });
+  const pools = usePools();
+  const liveOnly = pools.data?.source === "chain";
 
   return (
     <>
@@ -19,7 +19,11 @@ export default function PoolsPage() {
 
       <section className="card">
         {pools.isLoading ? <div className="skeleton" style={{ height: 160 }} /> : null}
-        {pools.isError ? <p className="muted">The indexer API is not reachable.</p> : null}
+        {liveOnly ? (
+          <p className="notice" style={{ marginTop: 0, marginBottom: 14 }}>
+            Live reserves read from the chain. Volume, fees and history require the indexer.
+          </p>
+        ) : null}
 
         {pools.data ? (
           <div className="table-scroll">
@@ -36,7 +40,7 @@ export default function PoolsPage() {
                 </tr>
               </thead>
               <tbody>
-                {pools.data.map((pool) => (
+                {pools.data.pools.map((pool) => (
                   <tr key={pool.address}>
                     <td>
                       <Link href={`/pools/${pool.address}`}>{pool.label}</Link>
@@ -44,15 +48,27 @@ export default function PoolsPage() {
                     <td className="mono muted">{formatAddress(pool.address)}</td>
                     <td className="numeric">{formatNumber(pool.lastTradePrice, 6)}</td>
                     <td className={`numeric ${pool.priceChange24h >= 0 ? "pos" : "neg"}`}>
-                      {formatPercent(pool.priceChange24h)}
+                      {liveOnly ? <span className="dim">-</span> : formatPercent(pool.priceChange24h)}
                     </td>
                     <td className="numeric">
-                      {formatNumber(pool.volume24h.token0, 2)} {pool.token0.symbol}
+                      {liveOnly ? (
+                        <span className="dim">-</span>
+                      ) : (
+                        <>
+                          {formatNumber(pool.volume24h.token0, 2)} {pool.token0.symbol}
+                        </>
+                      )}
                     </td>
                     <td className="numeric">
-                      {formatNumber(pool.fees24h.token0, 4)} {pool.token0.symbol}
+                      {liveOnly ? (
+                        <span className="dim">-</span>
+                      ) : (
+                        <>
+                          {formatNumber(pool.fees24h.token0, 4)} {pool.token0.symbol}
+                        </>
+                      )}
                     </td>
-                    <td className="numeric">{pool.trades24h}</td>
+                    <td className="numeric">{liveOnly ? <span className="dim">-</span> : pool.trades24h}</td>
                   </tr>
                 ))}
               </tbody>

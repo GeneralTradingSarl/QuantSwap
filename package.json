@@ -19,8 +19,25 @@
     "web:build": "npm --prefix web run build",
     "setup:local": "npm run deploy:local && npm run simulate && npm run export"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "defi",
+    "dex",
+    "decentralized-exchange",
+    "automated-market-maker",
+    "amm",
+    "solidity",
+    "ethereum",
+    "evm",
+    "twap-oracle",
+    "flash-swap",
+    "hardhat",
+    "wagmi",
+    "viem",
+    "nextjs",
+    "typescript",
+    "blockchain"
+  ],
+  "author": "Ismaël LADJOHOUNLOU <development0787@gmail.com> (https://ismael-portfolio-liard.vercel.app/en)",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
@@ -28,5 +45,13 @@
     "hardhat": "^2.29.1",
     "solc": "^0.8.28"
   },
-  "private": true
+  "private": true,
+  "homepage": "https://github.com/GeneralTradingSarl/QuantSwap#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeneralTradingSarl/QuantSwap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GeneralTradingSarl/QuantSwap/issues"
+  }
 }

@@ -1,0 +1,36 @@
+# GitHub reads this file and renders a "Cite this repository" panel on the repository page.
+# It is also the machine-readable statement of who wrote this software.
+cff-version: 1.2.0
+title: "QuantSwap: a constant product decentralised exchange"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "LADJOHOUNLOU"
+    given-names: "Ismaël"
+    orcid: ""
+    website: "https://ismael-portfolio-liard.vercel.app/en"
+    alias: "GeneralTradingSarl"
+repository-code: "https://github.com/GeneralTradingSarl/QuantSwap"
+url: "https://github.com/GeneralTradingSarl/QuantSwap"
+abstract: >-
+  Constant product automated market maker built end to end: Solidity pair,
+  factory, router and sliding window TWAP oracle with flash swaps, EIP-2612
+  permit and fee-on-transfer support; a Node and TypeScript event indexer with
+  block-hash reorganisation detection and rollback; and a Next.js, React and
+  wagmi interface presenting the swap flow as an explicit state machine.
+keywords:
+  - defi
+  - decentralized-exchange
+  - automated-market-maker
+  - solidity
+  - ethereum
+  - evm
+  - twap-oracle
+  - hardhat
+  - wagmi
+  - viem
+  - nextjs
+  - typescript
+license: GPL-3.0-or-later
+date-released: "2026-09-14"
+version: "1.0.0"

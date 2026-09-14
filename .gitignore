@@ -14,3 +14,4 @@ indexer/node_modules/
 indexer/*.db
 indexer/*.db-journal
 deployments/localhost.json
+web/tsconfig.tsbuildinfo

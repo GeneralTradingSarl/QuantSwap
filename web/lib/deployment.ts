@@ -30,8 +30,19 @@ export function deploymentFor(chainId: number | undefined): Deployment | undefin
   return registry[String(chainId)];
 }
 
-/** The chain the app defaults to before a wallet is connected. */
-export const defaultChainId = supportedChainIds[0] ?? 31337;
+/**
+ * The chain the app defaults to before a wallet is connected.
+ *
+ * A public deployment should open on the public network, not on whatever local chain the
+ * deployment file happens to list first, so a real network wins over 31337 unless an
+ * explicit override is set at build time.
+ */
+export const defaultChainId = (() => {
+  const override = Number(process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID);
+  if (Number.isFinite(override) && supportedChainIds.includes(override)) return override;
+  const publicChain = supportedChainIds.find((id) => id !== 31337);
+  return publicChain ?? supportedChainIds[0] ?? 31337;
+})();
 
 export function tokenList(deployment: Deployment | undefined): TokenInfo[] {
   if (!deployment) return [];
