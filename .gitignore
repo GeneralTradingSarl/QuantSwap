@@ -1,0 +1,16 @@
+node_modules/
+artifacts/
+cache/
+coverage/
+coverage.json
+typechain-types/
+.env
+.env.local
+*.log
+web/.next/
+web/out/
+web/node_modules/
+indexer/node_modules/
+indexer/*.db
+indexer/*.db-journal
+deployments/localhost.json
