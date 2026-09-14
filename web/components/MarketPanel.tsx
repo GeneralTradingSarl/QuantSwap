@@ -4,18 +4,28 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { indexerApi } from "@/lib/api";
 import { usePools } from "@/lib/usePools";
+import { demoApi, demoEnabled } from "@/lib/demoData";
 import { formatNumber, formatPercent } from "@/lib/format";
 
 /** Live market summary next to the swap form, straight from the indexer. */
 export function MarketPanel() {
   const pools = usePools();
   const stats = useQuery({
-    queryKey: ["stats"],
-    queryFn: indexerApi.stats,
+    queryKey: ["stats", pools.data?.source],
+    queryFn: async () => {
+      if (pools.data?.source === "demo") return demoApi.stats();
+      try {
+        return await indexerApi.stats();
+      } catch (error) {
+        if (demoEnabled) return demoApi.stats();
+        throw error;
+      }
+    },
     refetchInterval: 15_000,
     retry: false,
   });
   const liveOnly = pools.data?.source === "chain";
+  const isDemo = pools.data?.source === "demo";
 
   return (
     <div className="stack">
@@ -29,6 +39,13 @@ export function MarketPanel() {
         <h2 className="card-title">Markets</h2>
         <p className="card-subtitle">Reserves and 24 hour activity, from indexed events.</p>
 
+        {isDemo ? (
+          <p className="notice notice-warning" style={{ marginTop: 0, marginBottom: 14 }}>
+            Demo data: a snapshot of a seeded local market, so the interface can be explored
+            without a deployment. Connect a wallet to a network where QuantSwap is deployed to
+            see live pools.
+          </p>
+        ) : null}
         {liveOnly ? (
           <p className="notice" style={{ marginTop: 0, marginBottom: 14 }}>
             No indexer is reachable, so this table shows live reserves read directly from the

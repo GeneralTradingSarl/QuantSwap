@@ -113,6 +113,35 @@ Beyond the per-function unit tests, the suite covers the cases that actually cos
   operation dilutes an existing LP's claim (`test/Invariants.test.js`, five fixed seeds so any
   failure is reproducible)
 
+## Deploying the interface
+
+The repository root is a Hardhat project and the app lives in `web/`, which is the first
+thing that breaks a hosted deployment: pointed at the root, a build finds no Next.js app and
+fails. Two ways to get it right, both already configured:
+
+- **Set the project's root directory to `web`.** `web/vercel.json` then applies and the build
+  is zero-config.
+- **Leave the root directory at the repository root.** The root `vercel.json` installs and
+  builds inside `web/` and publishes `web/.next`.
+
+Both set `NEXT_PUBLIC_DEMO=1`, which matters because a public deployment has no contracts to
+read: they live on a local chain the visitor does not have. In that state the interface
+serves a **snapshot captured from a seeded local market** — real output of these contracts
+and this indexer, frozen at a point in time — and says so on every view that uses it. The
+alternative, an empty shell, shows nothing about the work; the other alternative, unlabelled
+fixtures presented as live prices, is a lie.
+
+Data sources, in the order the app tries them:
+
+| Source | When | What it can show |
+|---|---|---|
+| Indexer API | `NEXT_PUBLIC_INDEXER_URL` is set and answers | everything: reserves, volume, fees, candles, trades |
+| Chain multicall | a deployment exists for the connected chain | live reserves and spot price |
+| Demo snapshot | `NEXT_PUBLIC_DEMO=1` and neither of the above | the full interface, labelled as a snapshot |
+
+Point it at a real deployment by setting `NEXT_PUBLIC_INDEXER_URL` to a hosted indexer and
+`NEXT_PUBLIC_DEFAULT_CHAIN_ID` to the network, after deploying the contracts there.
+
 ## Deploying to a test network
 
 ```bash

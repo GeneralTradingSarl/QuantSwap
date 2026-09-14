@@ -4,6 +4,7 @@ import { use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { indexerApi } from "@/lib/api";
 import { usePool } from "@/lib/usePools";
+import { demoApi, demoEnabled } from "@/lib/demoData";
 import { PriceChart } from "@/components/PriceChart";
 import { TradeFeed } from "@/components/TradeFeed";
 import { formatNumber, formatPercent } from "@/lib/format";
@@ -21,18 +22,19 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
   const poolQuery = usePool(address);
   const pool = { data: poolQuery.data?.pool, isError: poolQuery.isError };
   const liveOnly = poolQuery.data?.source === "chain";
+  const isDemo = poolQuery.data?.source === "demo";
 
   const candles = useQuery({
-    queryKey: ["candles", address, interval],
-    queryFn: () => indexerApi.candles(address, interval, 120),
-    refetchInterval: 15_000,
+    queryKey: ["candles", address, interval, isDemo],
+    queryFn: () => (isDemo ? demoApi.candles(address) : indexerApi.candles(address, interval, 120)),
+    refetchInterval: isDemo ? false : 15_000,
     retry: false,
     enabled: !liveOnly,
   });
   const swaps = useQuery({
-    queryKey: ["swaps", address],
-    queryFn: () => indexerApi.swaps(address, 25),
-    refetchInterval: 10_000,
+    queryKey: ["swaps", address, isDemo],
+    queryFn: () => (isDemo ? demoApi.swaps(address) : indexerApi.swaps(address, 25)),
+    refetchInterval: isDemo ? false : 10_000,
     retry: false,
     enabled: !liveOnly,
   });
@@ -83,6 +85,12 @@ export default function PoolPage({ params }: { params: Promise<{ address: string
             }
           />
         </div>
+      ) : null}
+
+      {isDemo ? (
+        <p className="notice notice-warning" style={{ marginTop: 0, marginBottom: 16 }}>
+          Demo data: captured from a seeded local market, not a live feed.
+        </p>
       ) : null}
 
       <div className="stack">

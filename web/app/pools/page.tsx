@@ -7,6 +7,7 @@ import { formatAddress, formatNumber, formatPercent } from "@/lib/format";
 export default function PoolsPage() {
   const pools = usePools();
   const liveOnly = pools.data?.source === "chain";
+  const isDemo = pools.data?.source === "demo";
 
   return (
     <>
@@ -19,6 +20,12 @@ export default function PoolsPage() {
 
       <section className="card">
         {pools.isLoading ? <div className="skeleton" style={{ height: 160 }} /> : null}
+        {isDemo ? (
+          <p className="notice notice-warning" style={{ marginTop: 0, marginBottom: 14 }}>
+            Demo data: a snapshot of a seeded local market. Numbers below are real output from
+            the contracts and the indexer, captured at a point in time rather than live.
+          </p>
+        ) : null}
         {liveOnly ? (
           <p className="notice" style={{ marginTop: 0, marginBottom: 14 }}>
             Live reserves read from the chain. Volume, fees and history require the indexer.
@@ -51,7 +58,13 @@ export default function PoolsPage() {
                       {liveOnly ? <span className="dim">-</span> : formatPercent(pool.priceChange24h)}
                     </td>
                     <td className="numeric">
-                      {liveOnly ? (
+                      {isDemo ? (
+          <p className="notice notice-warning" style={{ marginTop: 0, marginBottom: 14 }}>
+            Demo data: a snapshot of a seeded local market. Numbers below are real output from
+            the contracts and the indexer, captured at a point in time rather than live.
+          </p>
+        ) : null}
+        {liveOnly ? (
                         <span className="dim">-</span>
                       ) : (
                         <>
@@ -60,7 +73,13 @@ export default function PoolsPage() {
                       )}
                     </td>
                     <td className="numeric">
-                      {liveOnly ? (
+                      {isDemo ? (
+          <p className="notice notice-warning" style={{ marginTop: 0, marginBottom: 14 }}>
+            Demo data: a snapshot of a seeded local market. Numbers below are real output from
+            the contracts and the indexer, captured at a point in time rather than live.
+          </p>
+        ) : null}
+        {liveOnly ? (
                         <span className="dim">-</span>
                       ) : (
                         <>

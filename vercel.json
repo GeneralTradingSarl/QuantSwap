@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "npm ci --prefix web",
+  "buildCommand": "npm run build --prefix web",
+  "outputDirectory": "web/.next",
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_DEMO": "1",
+      "NEXT_PUBLIC_INDEXER_URL": ""
+    }
+  }
+}
