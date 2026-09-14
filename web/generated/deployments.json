@@ -1,0 +1,67 @@
+{
+  "31337": {
+    "chainId": 31337,
+    "network": "localhost",
+    "deployedAt": "2026-09-14T10:07:06.163Z",
+    "startBlock": 4,
+    "contracts": {
+      "factory": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "router": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "weth": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "oracle": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    },
+    "pairCodeHash": "0x7259ede8c9e1efc03b1506d021afd055d0ac16a6c3bd04094e0450c98c9b43e2",
+    "tokens": {
+      "usdc": {
+        "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        "symbol": "qUSDC",
+        "name": "QuantSwap USD",
+        "decimals": 6
+      },
+      "wbtc": {
+        "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+        "symbol": "qWBTC",
+        "name": "QuantSwap BTC",
+        "decimals": 8
+      },
+      "qst": {
+        "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+        "symbol": "QST",
+        "name": "QuantSphere Token",
+        "decimals": 18
+      },
+      "weth": {
+        "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "symbol": "WETH",
+        "name": "Wrapped Ether",
+        "decimals": 18
+      }
+    },
+    "pairs": [
+      {
+        "address": "0x5dEF966dfF08EE533C7e24a5f52C86Ad8b5F806E",
+        "token0": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "token1": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        "label": "WETH/qUSDC"
+      },
+      {
+        "address": "0x069A2A8950Dd9196baf40b60586B8FB6f1e6a969",
+        "token0": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+        "token1": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        "label": "qWBTC/qUSDC"
+      },
+      {
+        "address": "0x0D93d8dD9Dab9C5A5D56Bd9E5681790340FdA5A3",
+        "token0": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+        "token1": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        "label": "QST/qUSDC"
+      },
+      {
+        "address": "0x37d03CD06bcdd63FEDd02615ddA01f67DA6040fE",
+        "token0": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+        "token1": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+        "label": "QST/WETH"
+      }
+    ]
+  }
+}

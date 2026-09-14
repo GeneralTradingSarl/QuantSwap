@@ -1,17 +1,32 @@
 {
   "name": "quantswap",
   "version": "1.0.0",
-  "description": "",
+  "description": "Constant product DEX: Solidity contracts, event indexer and Next.js interface.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "simulate": "hardhat run scripts/simulate.js --network localhost",
+    "export": "node scripts/export-frontend.js",
+    "indexer": "npm --prefix indexer start",
+    "indexer:test": "npm --prefix indexer test",
+    "web": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "setup:local": "npm run deploy:local && npm run simulate && npm run export"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^17.4.2",
     "hardhat": "^2.29.1",
     "solc": "^0.8.28"
-  }
+  },
+  "private": true
 }

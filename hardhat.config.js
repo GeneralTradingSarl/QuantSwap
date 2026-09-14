@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
 const { subtask } = require("hardhat/config");
 const { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } = require("hardhat/builtin-tasks/task-names");
 
@@ -17,6 +18,15 @@ subtask(TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD, async (args, hre, runSuper) => {
   return runSuper();
 });
 
+/**
+ * A test network is only declared when both its RPC URL and a key are present, so a missing
+ * .env produces a clear "network not configured" instead of a confusing connection error.
+ */
+function testnet(name, url, chainId) {
+  if (!url || !process.env.PRIVATE_KEY) return {};
+  return { [name]: { url, chainId, accounts: [process.env.PRIVATE_KEY] } };
+}
+
 const SOLC_VERSION = "0.8.28";
 const SOLC_LONG_VERSION = require("solc").version();
 
@@ -31,6 +41,10 @@ module.exports = {
   },
   networks: {
     hardhat: { allowUnlimitedContractSize: false },
+    localhost: { url: "http://127.0.0.1:8545" },
+    ...testnet("sepolia", process.env.SEPOLIA_RPC_URL, 11155111),
+    ...testnet("baseSepolia", process.env.BASE_SEPOLIA_RPC_URL, 84532),
+    ...testnet("arbitrumSepolia", process.env.ARBITRUM_SEPOLIA_RPC_URL, 421614),
   },
   gasReporter: { enabled: process.env.REPORT_GAS === "true" },
   mocha: { timeout: 120000 },

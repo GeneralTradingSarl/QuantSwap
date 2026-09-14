@@ -1,0 +1,15 @@
+{
+  "name": "@quantswap/indexer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.5.0" },
+  "scripts": {
+    "start": "node src/index.js",
+    "backfill": "node src/index.js --backfill-only",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "viem": "^2.21.0"
+  }
+}
